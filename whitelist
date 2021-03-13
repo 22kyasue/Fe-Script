@@ -3,7 +3,7 @@ userids = {
 [1989852216] = true, -- iumufan
 [1736738991] = true, -- musc3lar
 [1801218662] = true, --7Gxds
-
+[1699430332] = true, --power
 
 }
 return userids
