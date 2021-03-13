@@ -464,6 +464,134 @@ cmd.add({"hatdrop", "drop"}, {"hatdrop", "Drops ur God Damn HAT"}, function()
 end)
 
 
+cmd.add({"Mute"}, {"Mute", "Mute Commands"}, function()
+local player = game.Players.LocalPlayer
+local Players = game:GetService('Players')
+
+local muted = {}
+local commands = {}
+local mutingnew = false
+local stopspeed = 0.1
+
+local admins = {
+    (player.Name),
+}
+    
+local prefix = ">"
+    
+local function findPlayer(name)
+    for _, Player in ipairs(Players:GetPlayers()) do
+        if (string.lower(name) == string.sub(string.lower(Player.Name), 1, #name)) then
+            return Player;
+        end
+    end
+end
+    
+print(findPlayer("return"))
+    
+local function isAdmin(player)
+    for _, v in pairs(admins) do
+    	if v == player.Name then
+    		return true	
+    	end
+    end
+	return false
+end
+
+commands.cmds = function(arguments)
+   print('commands prefix >')
+   print('mute >player<')
+   print('unmute >player<')
+   print('muteall ~ mutes all players and new players')
+   print('unmuteall ~ turns off mutenew and unmutes everyone')
+end
+commands.muteall = function(arguments)
+    mutenew = true
+    for i,v in pairs(Players:GetChildren()) do 
+        if not table.find(muted, v.Name) then
+            table.insert(muted, v.Name)
+            print('Muted Player')
+        end
+    end
+end
+commands.unmuteall = function(arguments)
+    mutenew = false
+    for i,v in pairs(Players:GetChildren()) do
+        if table.find(muted, v.Name) then
+            local removeplayer = table.find(muted, v.Name) 
+            table.remove(muted, removeplayer)
+            print('Unmuted Player')
+        end
+    end
+end
+commands.mute = function(arguments)
+    local Input = arguments[1]
+    if Input then
+        local FoundPlayer = findPlayer(Input)
+    	if FoundPlayer then
+            if not table.find(muted, FoundPlayer.Name) then
+                table.insert(muted, FoundPlayer.Name)
+                print('Player Added')
+            end
+        end
+    end  
+end
+commands.unmute = function(arguments)
+    local Input = arguments[1]
+    if Input then
+        local FoundPlayer = findPlayer(Input)
+    	if FoundPlayer then
+            if table.find(muted, FoundPlayer.Name) then
+                local removeplayer = table.find(muted, FoundPlayer.Name)
+                table.remove(muted, removeplayer)
+                print('Player Removed')
+            end
+        end
+    end  
+end
+
+player.Chatted:Connect(function(message,recipient)
+	if isAdmin(player) then
+    	message = string.lower(message)
+    	local splitString = message:split(" ") -- Will Split String when space
+    	local slashCommand = splitString[1] 
+    	local cmd = slashCommand:split(prefix)	
+    	local cmdName = cmd[2]	
+    	if commands[cmdName] then
+    		local arguments = {} 
+    		for i = 2, #splitString, 1 do
+    			table.insert(arguments,splitString[i])			
+    		end
+    		commands[cmdName](arguments)
+    	end
+	end    
+end)
+
+Players.PlayerAdded:Connect(function(plr)
+    if mutenew == true then
+        if not table.find(muted, plr.Name) then
+            table.insert(muted, plr.Name)
+        end
+    end
+end)
+
+while wait(stopspeed) do
+    for i,v in pairs(game:GetService('Workspace').Players:GetChildren()) do
+        if table.find(muted, v.Name) then
+            local LT = v:FindFirstChild('LowerTorso')
+            if LT then
+                for a,b in pairs(LT:GetChildren()) do
+                    if b:IsA('Sound') then
+                        b:Stop()
+                    end
+                end
+            end
+        end
+    end
+end
+end)
+
+
 cmd.add({"hatfling"}, {"hatfling", "fling with hat"}, function()
 	spawn(function()
    while true do game:GetService("RunService").Heartbeat:wait()
@@ -539,6 +667,118 @@ cmd.add({"saveaudio", "stealaudio", "steal"}, {"saveaudio <player>", "Save all s
 	writefile(("Audio-Logs_%c"):format(math.random(1000, 9999)), audios)
 end)
 
+
+
+cmd.add({"Taser"}, {"Taser", "Taser"}, function()
+local player = game.Players.LocalPlayer
+local Humanoid = player.Character:FindFirstChildWhichIsA('Humanoid')
+local mouse = player:GetMouse()
+local hold = player.Character.Humanoid:LoadAnimation(game:GetService("ReplicatedStorage").ClientAnimations.SmallGunAim)
+
+local LettuceTool = Instance.new('Tool', player.Backpack)
+LettuceTool.RequiresHandle = false
+LettuceTool.CanBeDropped = true
+LettuceTool.Name = 'Taser'
+LettuceTool.ToolTip = 'tazer'
+
+local function eat()
+    hold:Play()
+    for i,v in pairs(player.Backpack:GetChildren()) do
+        if v.Name == '[Taser]' then
+            v.Parent = player.Character
+        end
+    end
+    for i,v in pairs(player.Character:GetChildren()) do
+        if v.Name == '[Taser]' then
+            v:Activate()
+        end
+    end
+end
+
+LettuceTool.Activated:Connect(function()
+    eat()
+end)
+LettuceTool.Unequipped:Connect(function()
+    hold:Stop()
+end)
+
+local pathto = game:GetService("Workspace").Ignored.Shop["[Taser] - $1000"].Head
+while wait(0.05) do
+    local sus = game:GetService("Players"):FindFirstChild(player.Name).PlayerGui.MainScreenGui:FindFirstChild('whiteScreen')
+    if sus then
+        sus:Destroy()
+    end
+    local HRP = player.Character:FindFirstChild('HumanoidRootPart')
+    if HRP and player.Character:FindFirstChild('Taser') then
+        local Away = (HRP.Position - pathto.Position).Magnitude
+        if Away <= 30 then
+            for i,v in pairs(player.Backpack:GetChildren()) do
+                local Humanoid = player.Character:FindFirstChildWhichIsA('Humanoid')
+                if v.Name == '[Taser]' then
+                    v.Parent = player.Character
+                end
+            end
+            fireclickdetector(pathto.Parent:FindFirstChild('ClickDetector'))
+        end
+    end
+end
+end)
+
+
+cmd.add({"taserlock"}, {"taserlock"}, function()
+	local RS = game:GetService('RunService')
+local TazerTarget = 'None'
+local player = game.Players.LocalPlayer
+local mouse = player:GetMouse()
+    local TazerTool = Instance.new('Tool', player.Backpack)
+    TazerTool.ToolTip = 'Click a player to tazer lock them'
+    TazerTool.CanBeDropped = false
+    TazerTool.RequiresHandle = false
+    TazerTool.Name = 'Tazer Lock'
+    
+    TazerTool.Activated:Connect(function()
+        local LowerTorso = mouse.Target.Parent:FindFirstChild('LowerTorso')
+        if not LowerTorso then
+            LowerTorso = mouse.Target.Parent.Parent:FindFirstChild('LowerTorso')
+        end
+        if LowerTorso then
+            if LowerTorso.Parent.Name == 'SpecialParts' then
+                TazerTarget = LowerTorso.Parent.Parent.Parent.Name
+                game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(TazerTarget, 'All');
+            else
+                TazerTarget = LowerTorso.Parent.Name
+                game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(TazerTarget, 'All');
+            end
+        else
+            TazerTarget = 'None'
+            game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("none", 'All');
+
+        end
+    end)
+
+
+coroutine.resume(coroutine.create(function()
+    RS.Heartbeat:Connect(function()
+        if TazerTarget ~= 'None' then
+                local FindPlayer = game.Workspace.Players:FindFirstChild(TazerTarget):FindFirstChild('UpperTorso') or game.Workspace:FindFirstChild(TazerTarget):FindFirstChild('UpperTorso') 
+                if FindPlayer then
+                    print('found')
+                    for i,v in pairs(player.Character:GetChildren()) do
+                        if v.Name == '[Taser]' then
+                            print('is taser')
+                            local part = v.Handle:FindFirstChild('Part')
+                            if part then
+                                print('is part')
+                                part.Position = FindPlayer.Position
+                            end
+                        end
+                    end
+                end
+            
+        end
+    end)
+end))
+end)
 
 
 --[[ FUNCTIONALITY ]]--
