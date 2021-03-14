@@ -430,6 +430,61 @@ cmd.add({"unfling"}, {"unfling", "Stop all attempts to fling"}, function()
 	lib.disconnect("fling")
 end)
 
+cmd.add({"PepperSpray", "Spray"}, {"PepperSpray", "Pepperspray and kill "}, function()
+local player = game.Players.LocalPlayer
+local Humanoid = player.Character:FindFirstChildWhichIsA('Humanoid')
+local mouse = player:GetMouse()
+local hold = player.Character.Humanoid:LoadAnimation(game:GetService("ReplicatedStorage").ClientAnimations.SmallGunAim)
+
+local LettuceTool = Instance.new('Tool', player.Backpack)
+LettuceTool.RequiresHandle = false
+LettuceTool.CanBeDropped = true
+LettuceTool.Name = 'PepperSpray'
+LettuceTool.ToolTip = 'PepperSpray'
+
+local function eat()
+    hold:Play()
+    for i,v in pairs(player.Backpack:GetChildren()) do
+        if v.Name == '[PepperSpray]' then
+            v.Parent = player.Character
+        end
+    end
+    for i,v in pairs(player.Character:GetChildren()) do
+        if v.Name == '[PepperSpray]' then
+            v:Activate()
+        end
+    end
+end
+
+LettuceTool.Activated:Connect(function()
+    eat()
+end)
+LettuceTool.Unequipped:Connect(function()
+    hold:Stop()
+end)
+
+local pathto = game:GetService("Workspace").Ignored.Shop["[PepperSpray] - $75"].Head
+while wait(0.05) do
+    local sus = game:GetService("Players"):FindFirstChild(player.Name).PlayerGui.MainScreenGui:FindFirstChild('whiteScreen')
+    if sus then
+        sus:Destroy()
+    end
+    local HRP = player.Character:FindFirstChild('HumanoidRootPart')
+    if HRP and player.Character:FindFirstChild('PepperSpray') then
+        local Away = (HRP.Position - pathto.Position).Magnitude
+        if Away <= 30 then
+            for i,v in pairs(player.Backpack:GetChildren()) do
+                local Humanoid = player.Character:FindFirstChildWhichIsA('Humanoid')
+                if v.Name == '[PepperSpray]' then
+                    v.Parent = player.Character
+                end
+            end
+            fireclickdetector(pathto.Parent:FindFirstChild('ClickDetector'))
+        end
+    end
+end
+end)
+
 cmd.add({"goto", "to", "tp", "teleport"}, {"goto <player/X,Y,Z>", "Teleport to the given player or X,Y,Z coordinates"}, function(p)
 	local players = argument.getPlayers(p)
 	local pos = lib.parseText(p, opt.tupleSeparator)
