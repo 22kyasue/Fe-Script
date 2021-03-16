@@ -9,6 +9,6 @@ userids = {
 --[1475841421] - true, JUSTR3NZZZZ trial
 [2236041157] = true, --hadi
 [1919189410] = true, --0929dids
-[1475841421] = true, --Baka aliyah to#6882
+
 }
 return userids
