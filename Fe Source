@@ -430,6 +430,17 @@ cmd.add({"unfling"}, {"unfling", "Stop all attempts to fling"}, function()
 	lib.disconnect("fling")
 end)
 
+cmd.add({"vipcrash"}, {"vipcrash", "Crashes Vip Server"}, function()
+---// leaked by Natass
+local natass = "/"
+
+    local Message = (natass.. "clean".." "):rep(10000000)
+
+    for i = 1, 75000 do
+        game.Players:Chat(Message)
+    end
+  end)
+
 cmd.add({"PepperSpray", "Spray"}, {"PepperSpray", "Pepperspray and kill "}, function()
 local player = game.Players.LocalPlayer
 local Humanoid = player.Character:FindFirstChildWhichIsA('Humanoid')
