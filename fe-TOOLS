@@ -1,0 +1,170 @@
+    local player = game.Players.LocalPlayer
+    local Humanoid = player.Character:FindFirstChildWhichIsA('Humanoid')
+    local mouse = player:GetMouse()
+    local hold = player.Character.Humanoid:LoadAnimation(game:GetService("ReplicatedStorage").ClientAnimations.SmallGunAim)
+    
+    local LettuceTool = Instance.new('Tool', player.Backpack)
+    LettuceTool.RequiresHandle = false
+    LettuceTool.CanBeDropped = true
+    LettuceTool.Name = 'FE-RPG'
+    LettuceTool.ToolTip = 'FE-RPG'
+    
+    local function eat()
+        local limit = 0
+        local limit2 = 0
+        hold:Play()
+        for i,v in pairs(player.Backpack:GetChildren()) do
+            if v.Name == '[RPG]' and v.Ammo.Value == 1 and limit == 0 then
+                limit = limit + 1
+                v.Parent = player.Character
+            end
+        end
+        for i,v in pairs(player.Character:GetChildren()) do
+            if v.Name == '[RPG]' and v.Ammo.Value == 1 and limit2 == 0 then
+                limit2 = limit2 + 1
+                v:Activate()
+            end
+        end
+    end
+    
+    LettuceTool.Activated:Connect(function()
+        eat()
+    end)
+    LettuceTool.Unequipped:Connect(function()
+        hold:Stop()
+    end)
+    LettuceTool.Equipped:Connect(function()
+        hold:Play()
+    end)
+    coroutine.resume(coroutine.create(function()
+        local pathto = game:GetService("Workspace").Ignored.Shop["[RPG] - $6000"].Head
+        while wait(0.05) do
+            local sus = game:GetService("Players"):FindFirstChild(player.Name).PlayerGui.MainScreenGui:FindFirstChild('whiteScreen')
+            if sus then
+                sus:Destroy()
+            end
+            local HRP = player.Character:FindFirstChild('HumanoidRootPart')
+            if HRP and player.Character:FindFirstChild('RPG') then
+                local Away = (HRP.Position - pathto.Position).Magnitude
+                if Away <= 30 then
+                    for i,v in pairs(player.Backpack:GetChildren()) do
+                        local Humanoid = player.Character:FindFirstChildWhichIsA('Humanoid')
+                        if v.Name == '[RPG]' then
+                            v.Parent = player.Character
+                        end
+                    end
+                    fireclickdetector(pathto.Parent:FindFirstChild('ClickDetector'))
+                end
+            end
+        end
+    end))
+
+
+
+local RS = game:GetService('RunService')
+local TazerTarget = 'None'
+local player = game.Players.LocalPlayer
+local mouse = player:GetMouse()
+    local TazerTool = Instance.new('Tool', player.Backpack)
+    TazerTool.ToolTip = 'Click a player to tazer lock them'
+    TazerTool.CanBeDropped = false
+    TazerTool.RequiresHandle = false
+    TazerTool.Name = 'Tazer Lock'
+    
+    TazerTool.Activated:Connect(function()
+        local LowerTorso = mouse.Target.Parent:FindFirstChild('LowerTorso')
+        if not LowerTorso then
+            LowerTorso = mouse.Target.Parent.Parent:FindFirstChild('LowerTorso')
+        end
+        if LowerTorso then
+            if LowerTorso.Parent.Name == 'SpecialParts' then
+                TazerTarget = LowerTorso.Parent.Parent.Parent.Name
+                game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(TazerTarget, 'All');
+            else
+                TazerTarget = LowerTorso.Parent.Name
+                game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(TazerTarget, 'All');
+            end
+        else
+            TazerTarget = 'None'
+            game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("none", 'All');
+
+        end
+    end)
+
+
+coroutine.resume(coroutine.create(function()
+    RS.Heartbeat:Connect(function()
+        if TazerTarget ~= 'None' then
+                local FindPlayer = game.Workspace.Players:FindFirstChild(TazerTarget):FindFirstChild('UpperTorso') or game.Workspace:FindFirstChild(TazerTarget):FindFirstChild('UpperTorso') 
+                if FindPlayer then
+                    print('found')
+                    for i,v in pairs(player.Character:GetChildren()) do
+                        if v.Name == '[Taser]' then
+                            print('is taser')
+                            local part = v.Handle:FindFirstChild('Part')
+                            if part then
+                                print('is part')
+                                part.Position = FindPlayer.Position
+                            end
+                        end
+                    end
+                end
+            
+        end
+    end)
+end))
+
+
+local player = game.Players.LocalPlayer
+local Humanoid = player.Character:FindFirstChildWhichIsA('Humanoid')
+local mouse = player:GetMouse()
+local hold = player.Character.Humanoid:LoadAnimation(game:GetService("ReplicatedStorage").ClientAnimations.SmallGunAim)
+
+local LettuceTool = Instance.new('Tool', player.Backpack)
+LettuceTool.RequiresHandle = false
+LettuceTool.CanBeDropped = true
+LettuceTool.Name = 'Taser'
+LettuceTool.ToolTip = 'tazer'
+
+local function eat()
+    hold:Play()
+    for i,v in pairs(player.Backpack:GetChildren()) do
+        if v.Name == '[Taser]' then
+            v.Parent = player.Character
+        end
+    end
+    for i,v in pairs(player.Character:GetChildren()) do
+        if v.Name == '[Taser]' then
+            v:Activate()
+        end
+    end
+end
+
+LettuceTool.Activated:Connect(function()
+    eat()
+end)
+LettuceTool.Unequipped:Connect(function()
+    hold:Stop()
+end)
+
+local pathto = game:GetService("Workspace").Ignored.Shop["[Taser] - $1000"].Head
+while wait(0.05) do
+    local sus = game:GetService("Players"):FindFirstChild(player.Name).PlayerGui.MainScreenGui:FindFirstChild('whiteScreen')
+    if sus then
+        sus:Destroy()
+    end
+    local HRP = player.Character:FindFirstChild('HumanoidRootPart')
+    if HRP and player.Character:FindFirstChild('Taser') then
+        local Away = (HRP.Position - pathto.Position).Magnitude
+        if Away <= 30 then
+            for i,v in pairs(player.Backpack:GetChildren()) do
+                local Humanoid = player.Character:FindFirstChildWhichIsA('Humanoid')
+                if v.Name == '[Taser]' then
+                    v.Parent = player.Character
+                end
+            end
+            fireclickdetector(pathto.Parent:FindFirstChild('ClickDetector'))
+        end
+    end
+end
+
