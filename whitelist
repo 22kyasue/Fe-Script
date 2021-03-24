@@ -10,6 +10,6 @@ userids = {
 [1919189410] = true, --0929dids
 [1475841421] = true, --Baka aliyah to
 [2050405946] = true, --vclxw
-[127082302] = true, -- iiv9s
+[1941356232] = true, -- iiv9s
 }
 return userids
