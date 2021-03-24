@@ -627,7 +627,7 @@ local admins = {
     (player.Name),
 }
     
-local prefix = ">"
+local prefix = "."
     
 local function findPlayer(name)
     for _, Player in ipairs(Players:GetPlayers()) do
