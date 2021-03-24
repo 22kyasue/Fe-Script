@@ -1,0 +1,124 @@
+local player = game.Players.LocalPlayer
+      local Players = game:GetService('Players')
+
+      local muted = {}
+      local commands = {}
+      local mutingnew = false
+      local stopspeed = 0.1
+
+      local admins = {
+          (player.Name),
+      }
+
+      local prefix = "."
+
+      local function findPlayer(name)
+          for _, Player in ipairs(Players:GetPlayers()) do
+              if (string.lower(name) == string.sub(string.lower(Player.Name), 1, #name)) then
+                  return Player;
+              end
+          end
+      end
+
+      print(findPlayer("return"))
+
+      local function isAdmin(player)
+          for _, v in pairs(admins) do
+          	if v == player.Name then
+          		return true
+          	end
+          end
+      	return false
+      end
+
+      commands.cmds = function(arguments)
+         print('commands prefix >')
+         print('mute >player<')
+         print('unmute >player<')
+         print('muteall ~ mutes all players and new players')
+         print('unmuteall ~ turns off mutenew and unmutes everyone')
+      end
+      commands.muteall = function(arguments)
+          mutenew = true
+          for i,v in pairs(Players:GetChildren()) do
+              if not table.find(muted, v.Name) then
+                  table.insert(muted, v.Name)
+                  print('Muted Player')
+              end
+          end
+      end
+      commands.unmuteall = function(arguments)
+          mutenew = false
+          for i,v in pairs(Players:GetChildren()) do
+              if table.find(muted, v.Name) then
+                  local removeplayer = table.find(muted, v.Name)
+                  table.remove(muted, removeplayer)
+                  print('Unmuted Player')
+              end
+          end
+      end
+      commands.mute = function(arguments)
+          local Input = arguments[1]
+          if Input then
+              local FoundPlayer = findPlayer(Input)
+          	if FoundPlayer then
+                  if not table.find(muted, FoundPlayer.Name) then
+                      table.insert(muted, FoundPlayer.Name)
+                      print('Player Added')
+                  end
+              end
+          end
+      end
+      commands.unmute = function(arguments)
+          local Input = arguments[1]
+          if Input then
+              local FoundPlayer = findPlayer(Input)
+          	if FoundPlayer then
+                  if table.find(muted, FoundPlayer.Name) then
+                      local removeplayer = table.find(muted, FoundPlayer.Name)
+                      table.remove(muted, removeplayer)
+                      print('Player Removed')
+                  end
+              end
+          end
+      end
+
+      player.Chatted:Connect(function(message,recipient)
+      	if isAdmin(player) then
+          	message = string.lower(message)
+          	local splitString = message:split(" ") -- Will Split String when space
+          	local slashCommand = splitString[1]
+          	local cmd = slashCommand:split(prefix)
+          	local cmdName = cmd[2]
+          	if commands[cmdName] then
+          		local arguments = {}
+          		for i = 2, #splitString, 1 do
+          			table.insert(arguments,splitString[i])
+          		end
+          		commands[cmdName](arguments)
+          	end
+      	end
+      end)
+
+      Players.PlayerAdded:Connect(function(plr)
+          if mutenew == true then
+              if not table.find(muted, plr.Name) then
+                  table.insert(muted, plr.Name)
+              end
+          end
+      end)
+
+      while wait(stopspeed) do
+          for i,v in pairs(game:GetService('Workspace').Players:GetChildren()) do
+              if table.find(muted, v.Name) then
+                  local LT = v:FindFirstChild('LowerTorso')
+                  if LT then
+                      for a,b in pairs(LT:GetChildren()) do
+                          if b:IsA('Sound') then
+                              b:Stop()
+                          end
+                      end
+                  end
+              end
+          end
+      end
