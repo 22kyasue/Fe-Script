@@ -12,5 +12,6 @@ userids = {
 [2050405946] = true, --vclxw
 [1941356232] = true, -- iiv9s
 [1728034632] = true, --dream
+[1699430332] = true, --power
 }
 return userids
