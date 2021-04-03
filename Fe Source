@@ -875,6 +875,9 @@ end
 end)
 
 cmd.add({"FeFlashLight","flashlight"}, {"FeFlashlight"}, function()
+
+game.Players.LocalPlayer.Character:MoveTo(Vector3.new(-246, 22, -223))
+
 local player = game.Players.LocalPlayer
 local Humanoid = player.Character:FindFirstChildWhichIsA('Humanoid')
 local mouse = player:GetMouse()
