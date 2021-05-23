@@ -430,17 +430,6 @@ cmd.add({"unfling"}, {"unfling", "Stop all attempts to fling"}, function()
 	lib.disconnect("fling")
 end)
 
-cmd.add({"vipcrash"}, {"vipcrash", "Crashes Vip Server"}, function()
----// leaked by Natass
-local natass = "/"
-
-    local Message = (natass.. "clean".." "):rep(10000000)
-
-    for i = 1, 75000 do
-        game.Players:Chat(Message)
-    end
-  end)
-
 cmd.add({"PepperSpray", "Spray"}, {"PepperSpray", "Pepperspray and kill "}, function()
 local player = game.Players.LocalPlayer
 local Humanoid = player.Character:FindFirstChildWhichIsA('Humanoid')
@@ -528,6 +517,91 @@ cmd.add({"hatdrop", "drop"}, {"hatdrop", "Drops ur God Damn HAT"}, function()
 	 end
 	end
 end)
+
+cmd.add({"infrev", "rev"}, {"infrev", "infrev"}, function()
+
+    local player = game.Players.LocalPlayer
+    if player.PlayerGui.MainScreenGui:FindFirstChild('BattleRoyaleFFA') then
+        player.PlayerGui.MainScreenGui:FindFirstChild('BattleRoyaleFFA').TextLabel.Name = 'AmmoText'
+        player.PlayerGui.MainScreenGui:FindFirstChild('BattleRoyaleFFA').Position = UDim2.new(2,0,2,0)
+        player.PlayerGui.MainScreenGui:FindFirstChild('BattleRoyaleFFA').Size = UDim2.new(0,0,0,0)
+        player.PlayerGui.MainScreenGui:FindFirstChild('BattleRoyaleFFA').Name = 'AmmoFrame'
+    end
+    
+    local Gun = '[Revolver]'
+    local GunTexture = 'rbxassetid://3420082920'
+    local GunPath = game:GetService("Workspace").Ignored.Shop["[Revolver] - $1300"].Head
+    local Holding = false
+    
+    local InfiniteTool = Instance.new('Tool', player.Backpack)
+    InfiniteTool.Name = 'Rev'
+    InfiniteTool.ToolTip = 'buy guns while holding, shoot while using this tool'
+    InfiniteTool.TextureId = GunTexture
+    InfiniteTool.RequiresHandle = true
+    InfiniteTool.CanBeDropped = false
+    
+    local Handle = Instance.new('Part', InfiniteTool)
+    Handle.Name = 'Handle'
+    Handle.Anchored = false
+    Handle.Size = Vector3.new(0,0,0)
+    Handle.Massless = true
+    Handle.Transparency = 1
+    Handle.CanCollide = false
+    
+    InfiniteTool.Equipped:Connect(function()
+        Holding = true
+        player.PlayerGui.MainScreenGui:FindFirstChild('AmmoFrame').Name = 'AmmoFrame2'
+        for i,v in pairs(player.Backpack:GetChildren()) do
+            if v.Name == Gun and not player.Character:FindFirstChild(Gun) then
+                if v.Ammo.Value > 0 then
+                    v.Parent = player.Character
+                end
+            end
+        end
+        while Holding == true do
+            wait(0)
+            local TotalAmmo = 0
+            for i,v in pairs(player.Backpack:GetChildren()) do
+                if v.Name == Gun then
+                    TotalAmmo = TotalAmmo + v.Ammo.Value
+                end
+            end
+            for i,v in pairs(player.Character:GetChildren()) do
+                if v.Name == Gun then
+                    TotalAmmo = TotalAmmo + v.Ammo.Value
+                end
+            end
+            player.PlayerGui.MainScreenGui.AmmoFrame2.AmmoText.Text = tostring(TotalAmmo)
+            player.PlayerGui.MainScreenGui.AmmoFrame2.AmmoText.Visible = true
+            player.PlayerGui.MainScreenGui.AmmoFrame2.Visible = true
+            local mag = (GunPath.Position - player.Character.HumanoidRootPart.Position).Magnitude
+            if mag <= 8 and player.Character:FindFirstChild(InfiniteTool.Name) then
+                for i,v in pairs(player.Backpack:GetChildren()) do
+                    if v.Name == Gun then
+                        v.Parent = player.Character
+                    end
+                end
+            end
+            fireclickdetector(GunPath.Parent.ClickDetector)
+            if player.Character:FindFirstChild(Gun).Ammo.Value < 1 then
+                player.Character:FindFirstChild(Gun).Parent = player.Backpack
+                for i,v in pairs(player.Backpack:GetChildren()) do
+                    if v.Name == Gun and not player.Character:FindFirstChild(Gun) then
+                        if v.Ammo.Value > 0 then
+                            v.Parent = player.Character
+                        end
+                    end
+                end
+            end
+        end
+    end)
+    InfiniteTool.Unequipped:Connect(function()
+        Holding = false
+        player.PlayerGui.MainScreenGui:FindFirstChild('AmmoFrame2').Name = 'AmmoFrame'
+    end)
+
+end)
+
 
 
 cmd.add({"glide", "flight"}, {"glide", "you can glide"}, function()
@@ -742,62 +816,6 @@ end
 end)
 
 
-cmd.add({"hatfling"}, {"hatfling", "fling with hat"}, function()
-	spawn(function()
-   while true do game:GetService("RunService").Heartbeat:wait()
-   for i,v in pairs(game.Players:GetPlayers()) do
-       if v == game.Players.LocalPlayer == false then
-           game.Players.LocalPlayer.MaximumSimulationRadius = math.pow(math.huge,math.huge)*math.huge
-           game.Players.LocalPlayer.SimulationRadius = math.pow(math.huge,math.huge)*math.huge
-           v.MaximumSimulationRadius = 0
-           v.SimulationRadius = 0
-           game:GetService("RunService").Stepped:wait()
-   end
-end
-end
-end)
-
-local Player = game:GetService("Players").LocalPlayer
-local Players = game:GetService("Players")
-local HatList = {}
-local i = 0
-for _,l in pairs(Player.Character:GetChildren()) do
-if l:IsA("Accessory") then if i>0 then l.Parent = workspace  end i = i + 1 end;
-end
-wait(.1)
-
-
-
-for _,v in pairs(workspace:GetDescendants()) do
-if v.Name == "Handle" and v:IsA("BasePart") and v.Parent:IsA("Accessory") and v:IsDescendantOf(Player.Character)==false and Players:GetPlayerFromCharacter(v.Parent.Parent)==nil then
-table.insert(HatList,v)
-end
-end
-
-for _,hat in pairs(HatList) do
-hat.Parent = workspace
-hat.Position = Player.Character.HumanoidRootPart.Position + Player.Character.HumanoidRootPart.CFrame.lookVector * 5
-local BodyPos = Instance.new("BodyPosition",hat)
-local BodyAng = Instance.new("BodyAngularVelocity",hat)
-BodyAng.AngularVelocity = Vector3.new(0,9e12,0)
-BodyAng.P = 9e12
-BodyPos.MaxForce = Vector3.new(9e9,9e9,9e9)
-BodyPos.P = 9e8
-spawn(function()
-while wait() do
-if pcall(function()
-hat.CanCollide = false
-BodyPos.Position = Player.Character.HumanoidRootPart.Position + Vector3.new(math.random(-2,2),math.random(-2,2),math.random(-2,2))
-end) then
-else
-BodyPos:Destroy()
-hat.CanCollide = true
-end
-end
-end)
-
-end
-end)
 
 
 cmd.add({"saveaudio", "stealaudio", "steal"}, {"saveaudio <player>", "Save all sounds a player is playing to a file  -Cyrus"}, function(p)
@@ -933,68 +951,6 @@ end
 end)
 
 
-cmd.add({"FeRPG"}, {"FeRPG"}, function()
-    local player = game.Players.LocalPlayer
-    local Humanoid = player.Character:FindFirstChildWhichIsA('Humanoid')
-    local mouse = player:GetMouse()
-    local hold = player.Character.Humanoid:LoadAnimation(game:GetService("ReplicatedStorage").ClientAnimations.SmallGunAim)
-    
-    local LettuceTool = Instance.new('Tool', player.Backpack)
-    LettuceTool.RequiresHandle = false
-    LettuceTool.CanBeDropped = true
-    LettuceTool.Name = 'RPG'
-    LettuceTool.ToolTip = 'rpg'
-    
-    local function eat()
-        local limit = 0
-        local limit2 = 0
-        hold:Play()
-        for i,v in pairs(player.Backpack:GetChildren()) do
-            if v.Name == '[RPG]' and v.Ammo.Value == 1 and limit == 0 then
-                limit = limit + 1
-                v.Parent = player.Character
-            end
-        end
-        for i,v in pairs(player.Character:GetChildren()) do
-            if v.Name == '[RPG]' and v.Ammo.Value == 1 and limit2 == 0 then
-                limit2 = limit2 + 1
-                v:Activate()
-            end
-        end
-    end
-    
-    LettuceTool.Activated:Connect(function()
-        eat()
-    end)
-    LettuceTool.Unequipped:Connect(function()
-        hold:Stop()
-    end)
-    LettuceTool.Equipped:Connect(function()
-        hold:Play()
-    end)
-    coroutine.resume(coroutine.create(function()
-        local pathto = game:GetService("Workspace").Ignored.Shop["[RPG] - $6000"].Head
-        while wait(0.05) do
-            local sus = game:GetService("Players"):FindFirstChild(player.Name).PlayerGui.MainScreenGui:FindFirstChild('whiteScreen')
-            if sus then
-                sus:Destroy()
-            end
-            local HRP = player.Character:FindFirstChild('HumanoidRootPart')
-            if HRP and player.Character:FindFirstChild('RPG') then
-                local Away = (HRP.Position - pathto.Position).Magnitude
-                if Away <= 30 then
-                    for i,v in pairs(player.Backpack:GetChildren()) do
-                        local Humanoid = player.Character:FindFirstChildWhichIsA('Humanoid')
-                        if v.Name == '[RPG]' then
-                            v.Parent = player.Character
-                        end
-                    end
-                    fireclickdetector(pathto.Parent:FindFirstChild('ClickDetector'))
-                end
-            end
-        end
-    end))
-end)
 
 cmd.add({"Grenade"}, {"Grenade"}, function()
 local player = game.Players.LocalPlayer
@@ -1052,58 +1008,59 @@ end
 end)
 
 cmd.add({"taserlock"}, {"taserlock"}, function()
-	local RS = game:GetService('RunService')
-local TazerTarget = 'None'
-local player = game.Players.LocalPlayer
-local mouse = player:GetMouse()
-    local TazerTool = Instance.new('Tool', player.Backpack)
-    TazerTool.ToolTip = 'Click a player to tazer lock them'
-    TazerTool.CanBeDropped = false
-    TazerTool.RequiresHandle = false
-    TazerTool.Name = 'Tazer Lock'
-    
-    TazerTool.Activated:Connect(function()
-        local LowerTorso = mouse.Target.Parent:FindFirstChild('LowerTorso')
-        if not LowerTorso then
-            LowerTorso = mouse.Target.Parent.Parent:FindFirstChild('LowerTorso')
-        end
-        if LowerTorso then
-            if LowerTorso.Parent.Name == 'SpecialParts' then
-                TazerTarget = LowerTorso.Parent.Parent.Parent.Name
-                game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(TazerTarget, 'All');
-            else
-                TazerTarget = LowerTorso.Parent.Name
-                game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(TazerTarget, 'All');
+    local player = game.Players.LocalPlayer
+    local RS = game:GetService('RunService')
+    local TazerTarget = 'None'
+    local player = game.Players.LocalPlayer
+    local mouse = player:GetMouse()
+        local TazerTool = Instance.new('Tool', player.Backpack)
+        TazerTool.ToolTip = 'Click a player to tazer lock them'
+        TazerTool.CanBeDropped = false
+        TazerTool.RequiresHandle = false
+        TazerTool.Name = 'Tazer Lock'
+
+        TazerTool.Activated:Connect(function()
+            local LowerTorso = mouse.Target.Parent:FindFirstChild('LowerTorso')
+            if not LowerTorso then
+                LowerTorso = mouse.Target.Parent.Parent:FindFirstChild('LowerTorso')
             end
-        else
-            TazerTarget = 'None'
-            game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("none", 'All');
+            if LowerTorso then
+                if LowerTorso.Parent.Name == 'SpecialParts' then
+                    TazerTarget = LowerTorso.Parent.Parent.Parent.Name
+                    game.StarterGui:SetCore("SendNotification", {Title = (TazerTarget), Text = ("is Taser locked"), Duration = 10, })
+                --    game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(TazerTarget, 'All');
+                else
+                    TazerTarget = LowerTorso.Parent.Name
+                    game.StarterGui:SetCore("SendNotification", {Title = (TazerTarget), Text = ("is Taser Locked"), Duration = 10, })
+                 --   game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(TazerTarget, 'All');
+                end
+            else
+                TazerTarget = 'None'
+                game.StarterGui:SetCore("SendNotification", {Title = "No Target", Text = ("is Taser Locked"), Duration = 10, })
+                --game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("none", 'All');
 
-        end
-    end)
+            end
+        end)
 
 
-coroutine.resume(coroutine.create(function()
-    RS.Heartbeat:Connect(function()
-        if TazerTarget ~= 'None' then
-                local FindPlayer = game.Workspace.Players:FindFirstChild(TazerTarget):FindFirstChild('UpperTorso') or game.Workspace:FindFirstChild(TazerTarget):FindFirstChild('UpperTorso') 
-                if FindPlayer then
-                    print('found')
-                    for i,v in pairs(player.Character:GetChildren()) do
-                        if v.Name == '[Taser]' then
-                            print('is taser')
-                            local part = v.Handle:FindFirstChild('Part')
-                            if part then
-                                print('is part')
-                                part.Position = FindPlayer.Position
+    coroutine.resume(coroutine.create(function()
+        RS.Heartbeat:Connect(function()
+            if TazerTarget ~= 'None' then
+                    local FindPlayer = game.Workspace.Players:FindFirstChild(TazerTarget):FindFirstChild('UpperTorso') or game.Workspace:FindFirstChild(TazerTarget):FindFirstChild('UpperTorso')
+                    if FindPlayer then
+                        for i,v in pairs(player.Character:GetChildren()) do
+                            if v.Name == '[Taser]' then
+                                local part = v.Handle:FindFirstChild('Part')
+                                if part then
+                                    part.Position = FindPlayer.Position
+                                end
                             end
                         end
                     end
-                end
-            
-        end
-    end)
-end))
+
+            end
+        end)
+    end))
 end)
 
 
