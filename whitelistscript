@@ -8,5 +8,9 @@ if whitelistecheck[game:service('Players').LocalPlayer.UserId] then
       notifSound:Destroy()
       game.StarterGui:SetCore("SendNotification", {Title = "FE-script", Text = "Whitelist Checked                      By kristina#1111", Icon = "rbxassetid://505845268", Duration = 10, Button1 = "Okay"})
 else
-game:service('Players').LocalPlayer:Kick('Ez ez, dm kristina#1111')
+game.StarterGui:SetCore("SendNotification", {
+        Title = "FE SCRIPT: Failed";
+        Text = "Stop Trying please";
+        Duration = 15;
+    })
 end
